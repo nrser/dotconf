@@ -1,0 +1,3 @@
+--markup markdown
+--plugin yard-clean
+--exclude dev/

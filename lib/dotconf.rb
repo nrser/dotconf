@@ -54,6 +54,7 @@ class Dotconf
     unless file?
       logger.info "dotenv not found at #{path}"
       logger.info "run `rake configure` to create one"
+      @loaded = :not_found
       return self
     end
 
@@ -73,6 +74,10 @@ class Dotconf
     end
 
     self
+  end
+
+  def load?
+    load! if loaded.nil?
   end
 
   def write(io)
@@ -138,10 +143,10 @@ class Dotconf
   def readers
     mod = Module.new
 
+    dotconf = self
+
     vars.each_value do |var|
-      mod.send :define_method, var.reader_name do
-        var.get
-      end
+      var.define_reader_method mod
     end
 
     mod
